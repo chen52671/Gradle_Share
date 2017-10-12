@@ -1,0 +1,10 @@
+person {
+        name {
+            firstname 'DSL'
+            lastname  'Groovy'
+        }
+  		action{
+          	eat "apple"
+            drive "mini cooper"
+  		}
+}

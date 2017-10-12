@@ -1,0 +1,6 @@
+task showProjectProperties << {
+   println project.path
+   println project.name
+   println project.buildDir
+
+}
