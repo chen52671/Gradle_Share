@@ -436,7 +436,7 @@ wtr<< 'abc'
 
 元对象编程或MOP(Meta Object Protocol)可以用于动态调用方法，并且可以即时创建类和方法。
 
-Groovy实现MOP有2种方法：
+Groovy实现MOP常见有2种方法：
 
 1. 重写"invokeMethod"和"set/getProperty"方法，和重写"methodMissing"和"propertyMissing"。
 2. 通过MetaClass来实现的MOP机制
@@ -526,6 +526,10 @@ public static stringMeta(){
 ExpandoMetaClass是MetaClass接口的一个实现类，可以通过GroovyObjectSupport的metaClass属性直接引入
 
 未包含任何参数的 `hello()` 闭包被添加到 `String` 的 `ExpandoMetaClass` (EMC) 中。每个类都包含在一个 EMC 中，EMC 将拦截对它的方法调用。这意味着即使 `String` 为 `final`，仍然可以将方法添加到其 EMC 中。因此，现在看上去仿佛 `String` 有一个 `hello()` 方法。
+
+Groovy拦截机制：
+
+![groovy_inter](/Users/zhengchen/Documents/Note/GradleUsage/groovy_inter.png)
 
 #### Groovy中的DSL
 
@@ -1368,6 +1372,8 @@ gradlew和gradlew.bat则是分别为 UN*X和Windows环境下的Gradle启动脚�
 
 在第一次执行./gradlew 时，其会根据wrapper中的设置，下载对应版本的Gradle(本地已下载的话就直接使用)，这样用户就可以不用自己下载配置gradle啦，gradle/wrapper/gradle-wrapper.properties就是配置gradle使用版本，保存路径等。
 
+local.properties则是保存的用户本地的一些配资比如sdk目录，其一般不要添加到版本控制中去。
+
 
 
 在电脑中，先要知道Gradle 的几个存储路径，其中：
@@ -1728,7 +1734,7 @@ apply plugin: 'sdk.plugin.sdkpublishplugin'
     sdkPlugin{
       //sdk的demo工程名称
       demoApp = "demo"
-      //接入文档的mulu
+      //接入文档的目录
       docDir = "doc"
       //是否自动生成javaDoc
       generateJavaDoc = true
@@ -1736,6 +1742,27 @@ apply plugin: 'sdk.plugin.sdkpublishplugin'
       sdklibs = ["libammsdk-2.0.jar","open_sdk_r5756_lite.jar"]
 }
 ```
+
+ 其中：
+
+| sdkPlugin       | 一个自定义的Extension                     |
+| --------------- | ----------------------------------- |
+| demoApp         | demo工程名称，最终会被拷贝到输出目录                |
+| docDir          | sdk文档的目录，同样会被拷贝到输出目录                |
+| generateJavaDoc | 是否生成JavaDoc，是的话，会在输出目录生成Javadoc文档网页 |
+| sdklibs         | 配置sdk 使用到的lib库                      |
+
+插件工作流程：
+
+1，为工程创建一个名为sdkPlugin的extension
+
+2，根据sdkPlugin中几项的配置分别创建任务：拷贝任务，JavaDoc生成任务，settings.gradle生成任务。lib工程生成任务。
+
+最终其输出的是一个包含doc，javaDoc，lib工程，demo工程的可直接导入到Android Studio中的工程。
+
+
+
+
 
 
 
